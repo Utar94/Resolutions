@@ -58,7 +58,7 @@ public class ResolutionController : Controller
         switch (fieldName)
         {
           case "Completion":
-            resolution.Completion = double.Parse(fieldValue.Value) * 100.0;
+            resolution.Completion = double.Parse(fieldValue.Value);
             break;
           case "Year":
             resolution.Year = ushort.Parse(fieldValue.Value);

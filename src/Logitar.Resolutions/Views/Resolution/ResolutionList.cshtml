@@ -1,4 +1,5 @@
 ﻿@using Logitar.Resolutions.Constants
+@using Logitar.Resolutions.Models.Components
 @using Logitar.Resolutions.Models.Resolution
 @model ResolutionModel[]
 
@@ -8,10 +9,17 @@
 
 <main class="container">
   <h1>Résolutions @(App.CurrentYear)</h1>
-  <ul>
-    @foreach (ResolutionModel resolution in Model)
+  @foreach (ResolutionModel resolution in Model)
+  {
+    <h2>@(resolution.Title)</h2>
+    ProgressBar progressBar = new()
     {
-      <li>@(resolution.Title) (@(resolution.Completion) %)</li>
-    }
-  </ul>
+      IsAnimated = resolution.Completion > 0.0 && resolution.Completion < 100.0,
+      IsStriped = true,
+      Label = resolution.Completion.ToString("0.00 %").Replace('.', ','),
+      Value = resolution.Completion,
+      Variant = ProgressVariant.Secondary
+    };
+    @(await Html.PartialAsync("~/Views/Shared/ProgressBar.cshtml", progressBar))
+  }
 </main>

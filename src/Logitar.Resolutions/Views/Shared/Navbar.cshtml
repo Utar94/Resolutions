@@ -1,11 +1,13 @@
-﻿@{
+﻿@using Logitar.Resolutions.Constants
+
+@{
   string environment = (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production").ToLowerInvariant();
 }
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
   <div class="container-fluid">
     <a href="/" class="navbar-brand">
-      <img src="/img/logo.jpg" alt="2025 Resolutions Logo" height="32" /> Résolutions 2025
+      <img src="/img/logo.jpg" alt="@(App.CurrentYear) Resolutions Logo" height="32" /> Résolutions @(App.CurrentYear)
       @if (environment != "production")
       {
         <span class="badge text-bg-warning">@(environment)</span>

@@ -1,5 +1,7 @@
-﻿@{
-  string title = ViewBag.Title == null ? "Résolutions 2025" : $"{ViewBag.Title} - Résolutions 2025";
+﻿@using Logitar.Resolutions.Constants
+
+@{
+  string title = ViewBag.Title == null ? $"Résolutions {App.CurrentYear}" : $"{ViewBag.Title} - Résolutions {App.CurrentYear}";
 }
 
 <!DOCTYPE html>

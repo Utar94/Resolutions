@@ -1,17 +1,17 @@
-﻿@using Logitar.Cms.Core.Contents.Models
-@model PublishedContent[]
+﻿@using Logitar.Resolutions.Constants
+@using Logitar.Resolutions.Models.Resolution
+@model ResolutionModel[]
 
 @{
   Layout = "_Layout";
 }
 
 <main class="container">
-  <h1>Résolutions 2025</h1>
+  <h1>Résolutions @(App.CurrentYear)</h1>
   <ul>
-    @foreach (PublishedContent resolution in Model)
+    @foreach (ResolutionModel resolution in Model)
     {
-      PublishedContentLocale locale = resolution.FindLocale("fr");
-      <li>@(locale.DisplayName ?? locale.UniqueName) (? %)</li>
+      <li>@(resolution.Title) (@(resolution.Completion) %)</li>
     }
   </ul>
 </main>

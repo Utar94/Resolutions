@@ -1,5 +1,6 @@
 ﻿using Logitar.Cms.Core.Commands;
 using Logitar.Cms.Infrastructure.Commands;
+using Logitar.Resolutions.Constants;
 using MediatR;
 
 namespace Logitar.Resolutions;
@@ -8,7 +9,6 @@ internal class Program
 {
   private const string DefaultUniqueName = "admin";
   private const string DefaultPassword = "P@s$W0rD";
-  private const string DefaultLocale = "fr";
 
   private static async Task Main(string[] args)
   {
@@ -29,7 +29,7 @@ internal class Program
 
     string uniqueName = configuration.GetValue<string>("CMS_USERNAME") ?? DefaultUniqueName;
     string password = configuration.GetValue<string>("CMS_PASSWORD") ?? DefaultPassword;
-    string defaultLocale = configuration.GetValue<string>("CMS_LOCALE") ?? DefaultLocale;
+    string defaultLocale = configuration.GetValue<string>("CMS_LOCALE") ?? Languages.French;
     await mediator.Send(new InitializeCmsCommand(uniqueName, password, defaultLocale));
 
     application.Run();

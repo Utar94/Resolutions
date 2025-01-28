@@ -1,9 +1,11 @@
-﻿@{
-  string title = ViewBag.Title == null ? "Résolutions 2025" : $"{ViewBag.Title} - Résolutions 2025";
+﻿@using Logitar.Resolutions.Constants
+
+@{
+  string title = ViewBag.Title == null ? $"Résolutions {App.CurrentYear}" : $"{ViewBag.Title} - Résolutions {App.CurrentYear}";
 }
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="@(Languages.French)">
 <head>
   <title>@(title)</title>
   <meta charset="utf-8">

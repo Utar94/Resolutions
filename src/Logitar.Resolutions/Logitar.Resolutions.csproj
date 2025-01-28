@@ -17,9 +17,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Logitar.Cms.Infrastructure.PostgreSQL" Version="0.1.0" />
-    <PackageReference Include="Logitar.Cms.Infrastructure.SqlServer" Version="0.1.0" />
-    <PackageReference Include="Logitar.Cms.Web" Version="0.1.0" />
+    <PackageReference Include="Logitar.Cms.Infrastructure.PostgreSQL" Version="0.2.0" />
+    <PackageReference Include="Logitar.Cms.Infrastructure.SqlServer" Version="0.2.0" />
+    <PackageReference Include="Logitar.Cms.Web" Version="0.2.0" />
+    <PackageReference Include="MarkdownSharp" Version="2.0.5" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.1" />

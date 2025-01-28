@@ -11,8 +11,6 @@ namespace Logitar.Resolutions.Controllers;
 [Route("")]
 public class ResolutionController : Controller
 {
-  private const string ContentType = "Resolution";
-
   private readonly IContentTypeQuerier _contentTypeQuerier;
   private readonly IPublishedContentQuerier _publishedContentQuerier;
 
@@ -25,14 +23,12 @@ public class ResolutionController : Controller
   [HttpGet]
   public async Task<ActionResult> ResolutionList(CancellationToken cancellationToken)
   {
-    string language = "fr";
-
-    ContentTypeModel contentType = await _contentTypeQuerier.ReadAsync(ContentType, cancellationToken)
-      ?? throw new InvalidOperationException($"The content type 'UniqueName={ContentType}' could not be found.");
+    ContentTypeModel contentType = await _contentTypeQuerier.ReadAsync(ContentTypes.Resolution.UniqueName, cancellationToken)
+      ?? throw new InvalidOperationException($"The content type 'UniqueName={ContentTypes.Resolution.UniqueName}' could not be found.");
     Dictionary<Guid, string> fieldNameByIds = contentType.Fields.ToDictionary(x => x.Id, x => x.UniqueName);
 
     SearchPublishedContentsPayload payload = new();
-    payload.ContentType.Names.Add(ContentType);
+    payload.ContentType.Uids.Add(contentType.Id);
     SearchResults<PublishedContentLocale> publishedLocales = await _publishedContentQuerier.SearchAsync(payload, cancellationToken);
 
     Dictionary<Guid, ResolutionModel> resolutions = [];
@@ -47,7 +43,7 @@ public class ResolutionController : Controller
         resolutions[resolution.Id] = resolution;
       }
 
-      if (publishedLocale.Language != null && publishedLocale.Language.Locale.Code.Equals(language, StringComparison.InvariantCultureIgnoreCase))
+      if (publishedLocale.Language != null && publishedLocale.Language.Locale.Code.Equals(Languages.French, StringComparison.InvariantCultureIgnoreCase))
       {
         resolution.Title = publishedLocale.DisplayName ?? publishedLocale.UniqueName;
       }
@@ -57,15 +53,19 @@ public class ResolutionController : Controller
         string fieldName = fieldNameByIds[fieldValue.Id];
         switch (fieldName)
         {
-          case "Completion":
+          case ContentTypes.Resolution.Completion:
             resolution.Completion = double.Parse(fieldValue.Value);
             break;
-          case "Year":
+          case ContentTypes.Resolution.Year:
             resolution.Year = ushort.Parse(fieldValue.Value);
             break;
         }
       }
     }
-    return View(resolutions.Values.Where(resolution => resolution.Year == App.CurrentYear).OrderBy(resolution => resolution.Title).ToArray());
+
+    ResolutionModel[] filteredResolutions = [.. resolutions.Values
+      .Where(resolution => !string.IsNullOrWhiteSpace(resolution.Title) && resolution.Year == App.CurrentYear)
+      .OrderBy(resolution => resolution.Title)];
+    return View(filteredResolutions);
   }
 }

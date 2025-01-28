@@ -1,25 +1,71 @@
-﻿@using Logitar.Resolutions.Constants
+﻿@using Logitar
+@using Logitar.Resolutions.Constants
 @using Logitar.Resolutions.Models.Components
 @using Logitar.Resolutions.Models.Resolution
+@using MarkdownSharp
+@using System.Globalization
 @model ResolutionModel[]
 
 @{
   Layout = "_Layout";
+
+  CultureInfo culture = CultureInfo.GetCultureInfo(Languages.French);
+  Markdown markdown = new();
+
+  DateTime now = DateTime.Now;
+  int currentDay = now.DayOfYear;
+  int totalDays = culture.Calendar.GetDaysInYear(now.Year);
+  double warning = currentDay / (double)totalDays;
+  double danger = warning / 2.0;
 }
 
 <main class="container">
   <h1>Résolutions @(App.CurrentYear)</h1>
+  <p>Jour @(currentDay) de @(totalDays) (@(warning.ToString("P2", culture)))</p>
   @foreach (ResolutionModel resolution in Model)
   {
-    <h2>@(resolution.Title)</h2>
-    ProgressBar progressBar = new()
+    ProgressVariant variant = ProgressVariant.Danger;
+    if (resolution.Completion == 1.0)
     {
-      IsAnimated = resolution.Completion > 0.0 && resolution.Completion < 100.0,
-      IsStriped = true,
-      Label = resolution.Completion.ToString("0.00 %").Replace('.', ','),
-      Value = resolution.Completion,
-      Variant = ProgressVariant.Secondary
-    };
+      variant = ProgressVariant.Primary;
+    }
+    else if (resolution.Completion > warning)
+    {
+      variant = ProgressVariant.Success;
+    }
+    else if (resolution.Completion > danger)
+    {
+      variant = ProgressVariant.Warning;
+    }
+
+    string title = markdown.Transform(resolution.Title).Remove("<p>").Remove("</p>");
+    <h4>
+      @switch (variant)
+      {
+        case ProgressVariant.Danger:
+          @("❌")
+          break;
+        case ProgressVariant.Primary:
+          @("✅")
+          break;
+        case ProgressVariant.Success:
+          @("🚧")
+          break;
+        case ProgressVariant.Warning:
+          @("⚠️")
+          break;
+      }
+      @(Html.Raw(title))
+    </h4>
+
+    ProgressBar progressBar = new()
+        {
+          IsAnimated = resolution.Completion > 0.0 && resolution.Completion < 1.0,
+          IsStriped = true,
+          Label = resolution.Completion.ToString("P2", culture),
+          Value = resolution.Completion * 100.0,
+          Variant = variant
+        };
     @(await Html.PartialAsync("~/Views/Shared/ProgressBar.cshtml", progressBar))
   }
 </main>
